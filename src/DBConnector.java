@@ -39,6 +39,10 @@ public class DBConnector {
     }
 
     public static void insertSignal(String source, int strength) {
+        if(strength < -120 || strength > 0)
+        {
+            throw new IllegalArgumentException("Signal strength must be between -120 and 0 dBm.");
+        }
         String sql = "INSERT INTO signal_log(signal_source, timestamp, signal_strength) VALUES (?,?,?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, source);
@@ -239,7 +243,7 @@ public class DBConnector {
             for (Vector<String> row : DBConnector.getAllLogs()) {
                 Vector<String> displayRow = new Vector<>(row);
                 displayRow.insertElementAt(String.valueOf(rowNum++),0);
-                tableModel.addRow(row);
+                tableModel.addRow(displayRow);
             }
         }
     }
@@ -277,3 +281,4 @@ public class DBConnector {
         }
     }
 }
+
